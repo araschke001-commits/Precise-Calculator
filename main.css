@@ -8,17 +8,29 @@ body {
     font-family: Arial, sans-serif;
 }
 
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.calculator-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
 .input-output-display {
     width: 320px;
-    padding: 16px;
-    border-radius: 12px;
+    padding: 1px;
+    border-radius: 9px;
     background: #1f1f1f;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .input-output-box {
     height: 160px;
-    padding: 12px;
+    padding: 10px;
     border-radius: 8px;
     background: linear-gradient(180deg, rgba(223, 232, 231, 0.98) 0%, rgba(223, 232, 231, 0.9) 100%);
     display: flex;
@@ -33,7 +45,7 @@ body {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: linear-gradient(180deg, rgba(223, 232, 231, 0) 0%, rgba(223, 232, 231, 0.1) 35%, rgba(223, 232, 231, 0.95) 100%);
+    background: linear-gradient(180deg, rgba(223, 232, 231, 0) 0%, rgba(223, 232, 231, 0.1) 75%, rgba(223, 232, 231, 0.95) 100%);
 }
 
 .history {
@@ -78,18 +90,18 @@ body {
 }
 
 .history-entry[data-level="1"] {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     opacity: 0.75;
 }
 
 .history-entry[data-level="2"] {
-    font-size: 0.8rem;
-    opacity: 0.5;
+    font-size: 0.9rem;
+    opacity: 0.75;
 }
 
 .history-entry[data-level="3"] {
-    font-size: 0.7rem;
-    opacity: 0.3;
+    font-size: 0.9rem;
+    opacity: 0.75;
 }
 
 .input-row {
@@ -122,4 +134,12 @@ body {
 
 .input-output-text::placeholder {
     color: #666;
+}
+
+.button-container {
+    width: 320px;
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
+    background-color: #1f1f1f;
 }

@@ -7,26 +7,33 @@
         <title>Precise Calculator</title>
     </head>
     <body>
-        <div class="input-output-display">
-            <div class="input-output-box">
-                <div class="history" id="history"></div>
-                <div class="input-row">
-                    <span class="prompt">&gt;</span>
-                    <input
-                        id="calculatorInput"
-                        class="input-output-text"
-                        type="text"
-                        autocomplete="off"
-                        spellcheck="false"
-                        placeholder=""
-                        aria-label="Calculator input"
-                    />
-                </div>
-            </div>
+        <div class="header">
+            <h1>Precise Calculator</h1>
         </div>
 
-        <div class="button-container">
-            <aside class="buttons"></aside>
+        
+        <div class="calculator-container">
+            <div class="input-output-display">
+                <div class="input-output-box">
+                    <div class="history" id="history"></div>
+                    <div class="input-row">
+                        <span class="prompt">&gt;</span>
+                        <input
+                            id="calculatorInput"
+                            class="input-output-text"
+                            type="text"
+                            autocomplete="off"
+                            spellcheck="false"
+                            placeholder=""
+                            aria-label="Calculator input"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-container">
+                <aside class="buttons"></aside>
+            </div>
         </div>
 
         <script src="script.js"></script>
