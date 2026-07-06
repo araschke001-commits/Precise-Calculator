@@ -1,4 +1,4 @@
-const buttonContainer = document.querySelector('.buttons');
+const buttonContainer = document.getElementById('buttons');
 const buttons = [
     'AC', '(', ')', '+',
     '7', '8', '9', '-',
@@ -7,7 +7,7 @@ const buttons = [
     '0', '.', '<=', '='
 ];
 
-const input = document.querySelector('.calculator-input');
+const input = document.getElementById('calculatorInput');
 
 function CreateButtons() {
     buttons.forEach(button => {
@@ -25,18 +25,18 @@ function handleButtonClick(button) {
     } else if (button === '<=') {
         deleteLastCharacter();
     } else if (button === '=') {
-        calculateResult(input.textContent);
+        calculateResult(input.value);
     } else {
         appendToInput(button);
-    }   
+    }
 }
 
 function clearInput() {
-    input.textContent = '';
+    input.value = '';
 }
 
 function deleteLastCharacter() {
-    input.textContent = input.textContent.slice(0, -1);
+    input.value = input.value.slice(0, -1);
 }
 
 function calculateResult(equation) {
@@ -44,5 +44,7 @@ function calculateResult(equation) {
 }
 
 function appendToInput(button) {
-    input.textContent += button;
+    input.value += button;
 }
+
+CreateButtons();
