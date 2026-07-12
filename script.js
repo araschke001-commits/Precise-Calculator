@@ -6,8 +6,6 @@ const buttons = [
     '1', '2', '3', '/',
     '0', '.', '<=', '='
 ];
-const buttonRowSize = 4; // Number of buttons per row
-const buttonPadding = 10; // Padding between buttons in pixels
 
 const input = document.getElementById('calculatorInput');
 
