@@ -21,7 +21,7 @@ body {
     align-items: center;
     justify-content: center;
     gap: 20px;
-    padding: 20px;
+    padding: 1px;
     border-radius: 9px;
     background: #1f1f1f;
 }
@@ -149,6 +149,7 @@ body {
     display: flex;
     justify-content: center;
     margin-top: 0px;
+    background: rgba(223, 232, 231, 0.95);
 }
 
 #buttons {
