@@ -5,7 +5,19 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="main.css" />
         <title>Precise Calculator</title>
+
+
+        <!-- MathQuill CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.css"/>
+        
+        <!-- jQuery (Required Dependency) - Must load BEFORE MathQuill JS -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        
+        <!-- MathQuill JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.js"></script>
     </head>
+
+
     <body>
         <div class="header">
             <h1>Precise Calculator</h1>
@@ -17,15 +29,7 @@
                 <div class="input-output-box">
                     <div class="history" id="history"></div>
                     <div class="input-row">
-                        <input
-                            id="calculatorInput"
-                            class="input-output-text"
-                            type="text"
-                            autocomplete="off"
-                            spellcheck="false"
-                            placeholder=""
-                            aria-label="Calculator input"
-                        />
+                        <span id="calculatorInput" contenteditable="true" spellcheck="false"></span>
                     </div>
                 </div>
             

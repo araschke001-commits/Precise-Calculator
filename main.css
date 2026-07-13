@@ -124,7 +124,7 @@ body {
     z-index: 1;
 }
 
-.input-output-text {
+.input {
     flex: 1;
     border: none;
     background: transparent;
@@ -135,7 +135,7 @@ body {
     font-family: inherit;
 }
 
-.input-output-text::placeholder {
+.input::placeholder {
     color: #666;
 }
 
