@@ -136,7 +136,7 @@ body {
 
 .mq-editable-field {
     width: 288px;
-    border: 0px;
+    border-color: transparent;
 }
 
 .button-container {
