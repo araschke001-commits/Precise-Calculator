@@ -125,7 +125,6 @@ body {
 }
 
 .input {
-    flex: 1;
     border: none;
     background: transparent;
     outline: none;
@@ -135,8 +134,9 @@ body {
     font-family: inherit;
 }
 
-.input::placeholder {
-    color: #666;
+.mq-editable-field {
+    width: 288px;
+    border: 0px;
 }
 
 .button-container {

@@ -52,7 +52,7 @@ function handleButtonClick(button) {
     } else if (button === '⌫') {
         deleteLastCharacter();
     } else if (button === '=') {
-        calculateResult(mathField ? mathField.latex() : '');
+        calculateResult(mathField ? mathField.latex().replace(/\s+/g, '') : '');
     } else {
         appendToInput(button);
     }
@@ -77,14 +77,30 @@ function deleteLastCharacter() {
     mathField.focus();
 }
 
-function calculateResult(equation) {
-    // Calculate using recursion (use helper functions for individual calculations)
-}
-
 function appendToInput(button) {
     if (!mathField) return;
 
     const sanitizedButton = button === '×' ? '\\times' : button === '÷' ? '\\div' : button === '−' ? '-' : button;
     mathField.write(sanitizedButton);
     mathField.focus();
+}
+
+function calculateResult(equation) {
+    return null; // Placeholder so the function doesn't run forever
+    if (equation === "" || equation === null || !isNaN(Number(equation))) {
+        return equation; // Return the original equation if it's empty, null, or a single number
+    }
+
+    let newEquation = equation;
+
+    // Calculate using recursion (use helper functions for individual calculations)
+    let simpleEquation = findFirstEquation(newEquation);
+
+    return calculateResult(newEquation); // Return the result
+}
+
+function findFirstEquation(equation) {
+    // Implement the logic to find the first equation needing to be done from the equation (using order of operations)
+    // This function should return the first equation of two numbers (Ex: 4+7) and the start index of that equation in the original equation string. If no equation is found, return null.
+    const operationOrder = [['\\sqrt', '\\nthroot', '^'], ['\\times', '\\div', '\\frac'], ['+', '-', '\\pm']];
 }
