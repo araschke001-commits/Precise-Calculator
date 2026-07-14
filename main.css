@@ -179,6 +179,9 @@ body {
     width: 100%;
     text-align: center;
     padding: 10px 0;
-    font-size: 0.75rem;
+}
+
+.footer p{
+    font-size: 0.6rem;
     color: #555;
 }
