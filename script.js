@@ -1,12 +1,29 @@
 let mathField;
 let input;
 
-function CreateButtons() {
-    const buttonContainer = document.getElementById('buttons');
+function createButtonsInContainer(containerId, buttons) {
+    const buttonContainer = document.getElementById(containerId);
 
     if (!buttonContainer) return;
 
-    const buttons = [
+    buttons.forEach(button => {
+        const buttonElement = document.createElement('button');
+        buttonElement.type = 'button';
+        buttonElement.className = 'calculator-button';
+        buttonElement.textContent = button;
+        buttonElement.addEventListener('click', () => handleButtonClick(button));
+        buttonContainer.appendChild(buttonElement);
+    });
+}
+
+function CreateButtons() {
+    const advancedButtons = [
+        '√', 'ⁿ√', 'x²', '^',
+        'π', 'e', 'abs', '?',
+        '%', 'nCr', 'nPr', '!',
+        '?', '?', '?', '?'
+    ];
+    const mainButtons = [
         '(', ')', 'C', '⌫',
         '7', '8', '9', '+',
         '4', '5', '6', '−',
@@ -14,13 +31,8 @@ function CreateButtons() {
         '0', '.', '=', '÷'
     ];
 
-    buttons.forEach(button => {
-        const buttonElement = document.createElement('button');
-        buttonElement.className = 'calculator-button';
-        buttonElement.textContent = button;
-        buttonElement.addEventListener('click', () => handleButtonClick(button));
-        buttonContainer.appendChild(buttonElement);
-    });
+    createButtonsInContainer('advanced-buttons', advancedButtons);
+    createButtonsInContainer('main-buttons', mainButtons);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
