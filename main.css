@@ -22,22 +22,8 @@ body {
     align-items: center;
     justify-content: center;
     gap: 20px;
-    padding: 1px;
-    border-radius: 9px;
-    margin: 15px;
-    background: #1f1f1f;
-}
-
-@media (min-width: 370px) and (max-width: 729.99px) {
-  .calculator-container {
-    width: 340px;
-  }
-}
-
-@media (min-width: 730px) {
-  .calculator-container {
-    width: 700px;
-  }
+    padding: 15px;
+    background: transparent;
 }
 
 .calculator-box {
@@ -48,27 +34,17 @@ body {
     align-items: center;
     justify-content: center;
     gap: 0px;
+    border: 1px solid #1f1f1f;
     border-radius: 8px;
-    margin: 15px;
     background: rgba(223, 232, 231, 0.9);
 }
 
-@media (min-width: 370px) and (max-width: 729.99px) {
-  .calculator-box {
-    width: 340px;
-  }
-}
-
-@media (min-width: 730px) {
-  .calculator-box {
-    width: 700px;
-  }
-}
-
 .input-output-box {
-    width: 320px;
+    box-sizing: border-box;
+    width: 100%;
     height: 160px;
     padding: 10px;
+    margin: 0 15px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -170,15 +146,52 @@ body {
 }
 
 .button-container {
-    width: 340px;
+    width: 100%;
     display: flex;
+    flex-direction: row;
     justify-content: center;
-    margin-top: 0px;
+    gap: 20px;
     background: rgba(223, 232, 231, 0.95);
-    border-radius: 0px 0px 8px 8px;
+    border-radius: 0 0 8px 8px;
 }
 
-#buttons {
+@media (min-width: 370px) and (max-width: 729.99px) {
+    .calculator-container {
+        width: 340px;
+    }
+
+    .calculator-box {
+        width: 340px;
+    }
+
+    .input-output-box {
+        width: 340px;
+    }
+
+    .button-container {
+        width: 340px;
+    }
+}
+
+@media (min-width: 730px) {
+    .calculator-container {
+        width: 700px;
+    }
+
+    .calculator-box {
+        width: 700px;
+    }
+
+    .input-output-box {
+        width: 700px;
+    }
+
+    .button-container {
+        width: 700px;
+    }
+}
+
+#advanced-buttons {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 8px;
@@ -187,20 +200,13 @@ body {
     box-sizing: border-box;
 }
 
-.calculator-button {
-    min-height: 44px;
-    padding: 0 10px;
-    border: none;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: 600;
-    background: #f5f5f5;
-    color: #111;
-    cursor: pointer;
-}
-
-.calculator-button:hover {
-    background: #e0e0e0;
+#main-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    width: 100%;
+    padding: 12px;
+    box-sizing: border-box;
 }
 
 .footer {
