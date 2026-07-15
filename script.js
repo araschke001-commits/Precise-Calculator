@@ -17,12 +17,12 @@ function createButtonsInContainer(containerId, buttons) {
 }
 
 function CreateButtons() {
-    const advancedButtons = [
+    /*const advancedButtons = [
         '√', 'ⁿ√', 'x²', '^',
         'π', 'e', 'abs', '?',
         '%', 'nCr', 'nPr', '!',
         '?', '?', '?', '?'
-    ];
+    ];*/
     const mainButtons = [
         '(', ')', 'C', '⌫',
         '7', '8', '9', '+',
@@ -31,7 +31,7 @@ function CreateButtons() {
         '0', '.', '=', '÷'
     ];
 
-    createButtonsInContainer('advanced-buttons', advancedButtons);
+    //createButtonsInContainer('advanced-buttons', advancedButtons);
     createButtonsInContainer('main-buttons', mainButtons);
 }
 
