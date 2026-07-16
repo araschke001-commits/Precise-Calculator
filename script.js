@@ -64,7 +64,8 @@ function handleButtonClick(button) {
     } else if (button === '⌫') {
         deleteLastCharacter();
     } else if (button === '=') {
-        calculateResult(mathField ? mathField.latex().replace(/\s+/g, '') : '');
+        const equation = mathField ? mathField.latex() : '';
+        console.log(`${equation} = ` + calculateResult(equation));
     } else {
         appendToInput(button);
     }
@@ -98,21 +99,80 @@ function appendToInput(button) {
 }
 
 function calculateResult(equation) {
-    return null; // Placeholder so the function doesn't run forever
-    if (equation === "" || equation === null || !isNaN(Number(equation))) {
-        return equation; // Return the original equation if it's empty, null, or a single number
     }
 
-    let newEquation = equation;
+function convertToRPN(equation) {
+    const tokens = latexTokens(equation);
+    let outputQueue = [];
+    let operatorStack = [];
 
-    // Calculate using recursion (use helper functions for individual calculations)
-    let simpleEquation = findFirstEquation(newEquation);
+    const precedence = {
+        '+': 1,
+        '-': 1,
+        '*': 2,
+        '/': 2,
+        '**': 3
+    };
 
-    return calculateResult(newEquation); // Return the result
+    for (let token of tokens) {
+        if (!isNaN(token)) {
+            outputQueue.push(token);
+        } else if (token === '(' || token === '[' || token === '{' || token === '|') {
+            operatorStack.push(token);
+        }
+    }
 }
 
-function findFirstEquation(equation) {
-    // Implement the logic to find the first equation needing to be done from the equation (using order of operations)
-    // This function should return the first equation of two numbers (Ex: 4+7) and the start index of that equation in the original equation string. If no equation is found, return null.
-    const operationOrder = [['\\sqrt', '\\nthroot', '^'], ['\\times', '\\div', '\\frac'], ['+', '-', '\\pm']];
+function latexTokens(equation) {
+    let tokens = [];
+    let currentToken = '';
+    let index = 0;
+
+    while (index < equation.length) {
+        let char = equation[index];
+        switch (true) {
+            case char === '\\': // LaTeX command
+                if (currentToken) {
+                    tokens.push(currentToken);
+                    currentToken = '';
+                }
+                currentToken += char;  // Add the backslash
+                index++;
+                while (index < equation.length && /[a-zA-Z]/.test(equation[index])) {
+                    currentToken += equation[index];
+                    index++;
+                }
+                tokens.push(currentToken);
+                currentToken = '';
+                continue;
+            case /[+\-*/^(){}\[\]]/.test(char): // Operators and braces
+                if (currentToken) {
+                    tokens.push(currentToken);
+                    currentToken = '';
+                }
+                tokens.push(char);
+                break;
+            case /[0-9.]/.test(char): // Numbers (including decimal points)
+                while (index < equation.length && /[0-9.]/.test(equation[index])) {
+                    currentToken += equation[index];
+                    index++;
+                }
+                tokens.push(currentToken);
+                currentToken = '';
+                continue;
+            case /\s/.test(char): // Whitespace
+                if (currentToken) {
+                    tokens.push(currentToken);
+                    currentToken = '';
+                }
+                break;
+            default:
+                return null;
+        }
+        
+        index++;
+    }
+    
+    if (currentToken) tokens.push(currentToken);
+    return tokens;
 }
