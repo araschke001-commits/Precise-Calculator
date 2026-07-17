@@ -103,6 +103,24 @@ function appendToInput(button) {
     mathField.focus();
 }
 
+const functionArgs = {
+    '\\sqrt': 1,
+    '\\root': 2, // What sqrt gets changed to by RPN converter
+    '\\frac': 2,
+    '\\log': 1,
+    '\\ln': 1,
+    '\\exp': 1,
+    '\\sin': 1,
+    '\\cos': 1,
+    '\\tan': 1,
+    '\\arcsin': 1,
+    '\\arccos': 1,
+    '\\arctan': 1,
+    '\\csc': 1,
+    '\\sec': 1,
+    '\\cot': 1
+}
+
 function calculateResult(equation) {
     rpnEquation = convertToRPN(equation)
     return rpnEquation;
@@ -113,29 +131,12 @@ function convertToRPN(equation) {
     let outputQueue = [];
     let operatorStack = [];
 
-    const functionArgs = {
-        '\\sqrt': 1, // Needs extra handling for \sqrt[n]{x} syntax
-        '\\frac': 2,
-        '\\log': 1,
-        '\\ln': 1,
-        '\\exp': 1,
-        '\\sin': 1,
-        '\\cos': 1,
-        '\\tan': 1,
-        '\\arcsin': 1,
-        '\\arccos': 1,
-        '\\arctan': 1,
-        '\\csc': 1,
-        '\\sec': 1,
-        '\\cot': 1
-    }
-
     const precedence = {
         '+': 1,
         '-': 1,
         '*': 2,
         '/': 2,
-        '**': 3
+        '^': 3
     };
 
     let isLeftBrace = false;
@@ -154,6 +155,9 @@ function convertToRPN(equation) {
                 operatorStack.push(token);
                 break;
             case (token in functionArgs): // Function
+                if (token === '\\sqrt' && tokens[1] === '['){
+                    token = '\\root';
+                }
                 operatorStack.push(token);
                 functionArgNum = functionArgs[token];
                 break;
@@ -182,6 +186,7 @@ function convertToRPN(equation) {
         tokens.shift(); // Delete the first element in tokens
         isLeftBrace = false;
     }
+    return outputQueue;
 }
 
 function latexTokens(equation) {
