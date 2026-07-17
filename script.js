@@ -65,7 +65,12 @@ function handleButtonClick(button) {
         deleteLastCharacter();
     } else if (button === '=') {
         const equation = mathField ? mathField.latex() : '';
-        console.log(`${equation} = ` + calculateResult(equation));
+        const result = calculateResult(equation);
+        console.log(`${equation} = ` + result);
+        const resultBox = document.getElementById('result');
+        if (resultBox) {
+            resultBox.textContent = result;
+        }
     } else {
         appendToInput(button);
     }
@@ -99,12 +104,31 @@ function appendToInput(button) {
 }
 
 function calculateResult(equation) {
-    }
+    rpnEquation = convertToRPN(equation)
+    return rpnEquation;
+}
 
 function convertToRPN(equation) {
     const tokens = latexTokens(equation);
     let outputQueue = [];
     let operatorStack = [];
+
+    const functionArgs = {
+        '\\sqrt': 1, // Needs extra handling for \sqrt[n]{x} syntax
+        '\\frac': 2,
+        '\\log': 1,
+        '\\ln': 1,
+        '\\exp': 1,
+        '\\sin': 1,
+        '\\cos': 1,
+        '\\tan': 1,
+        '\\arcsin': 1,
+        '\\arccos': 1,
+        '\\arctan': 1,
+        '\\csc': 1,
+        '\\sec': 1,
+        '\\cot': 1
+    }
 
     const precedence = {
         '+': 1,
@@ -114,12 +138,49 @@ function convertToRPN(equation) {
         '**': 3
     };
 
-    for (let token of tokens) {
-        if (!isNaN(token)) {
-            outputQueue.push(token);
-        } else if (token === '(' || token === '[' || token === '{' || token === '|') {
-            operatorStack.push(token);
+    let isLeftBrace = false;
+    let functionArgNum = 0;
+
+    while (tokens.length > 0) {
+        let token = tokens[0];
+        switch (true) {
+            case (/[0-9.]+/.test(token)): // Number
+                outputQueue.push(token);
+                break;
+            case (/[+\-*/^]/.test(token)): // Operator
+                if (operatorStack.length > 0 && operatorStack[operatorStack.length - 1] in precedence && token in precedence && precedence[operatorStack[operatorStack.length - 1]] > precedence[token]) {
+                    outputQueue.push(operatorStack.pop());
+                }
+                operatorStack.push(token);
+                break;
+            case (token in functionArgs): // Function
+                operatorStack.push(token);
+                functionArgNum = functionArgs[token];
+                break;
+            case (token === '\\left'):
+                // Ensure | is detected correctly as left or right
+                isLeftBrace = true;
+                tokens.shift();
+                continue;
+            case (token === '(' || token === '[' || token === '{' || (token === '|' && isLeftBrace == true)):
+                // If left brace, push to stack
+                operatorStack.push(token);
+                break;
+            case (token === '\\right'):
+                while (operatorStack.length > 0 && operatorStack[operatorStack.length - 1] !== '(' && operatorStack[operatorStack.length - 1] !== '[' && operatorStack[operatorStack.length - 1] !== '{' && operatorStack[operatorStack.length - 1] !== '|') {
+                    outputQueue.push(operatorStack.pop());
+                }
+                if (operatorStack[operatorStack.length - 1] in functionArgs && functionArgNum > 0) {
+                    outputQueue.push(operatorStack.pop());
+                }
+                if (functionArgNum > 0) {
+                    functionArgNum -= 1;
+                }
+                tokens.shift(); // Remove the \right so the closing brace gets removed at the end of the loop
+                break;
         }
+        tokens.shift(); // Delete the first element in tokens
+        isLeftBrace = false;
     }
 }
 
