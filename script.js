@@ -186,6 +186,9 @@ function convertToRPN(equation) {
         tokens.shift(); // Delete the first element in tokens
         isLeftBrace = false;
     }
+    while (operatorStack.length > 0){
+        outputQueue.push(operatorStack.pop());
+    }
     return outputQueue;
 }
 
@@ -208,6 +211,20 @@ function latexTokens(equation) {
                     currentToken += equation[index];
                     index++;
                 }
+
+                //Handle operators like \times and \div
+                switch (currentToken) {
+                    case '\\times':
+                        currentToken = '*';
+                        break;
+                    case '\\cdot':
+                        currentToken = '*';
+                        break;
+                    case '\\div':
+                        currentToken = '/';
+                        break;
+                }
+
                 tokens.push(currentToken);
                 currentToken = '';
                 continue;
