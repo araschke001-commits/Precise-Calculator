@@ -137,13 +137,55 @@ const functionArgs = {
 
 function calculateResult(equation) {
     let rpnEquation = convertToRPN(equation)
-    if (rpnEquation == null) return "Unrecognized Symbol";
-    return rpnEquation;
+    if (typeof rpnEquation === 'string') return rpnEquation;
+    
+    while (rpnEquation.length > 1) {
+        // Find the index of the first operator or command & how many inputs it takes
+        let i = 0;
+        let inputs = 0;
+        while (i < rpnEquation.length) {
+            if (rpnEquation[i] in functionArgs) {
+                inputs = functionArgs[rpnEquation[i]];
+                break;
+            }
+            if (/[+\-*/^|]/.test(rpnEquation[i])) {
+                (rpnEquation[i] === '|') ? inputs = 1 : inputs = 2;
+            }
+            i++;
+        }
+
+        // Calculate the first equation
+        let result = '';
+        const num1 = rpnEquation[i-2];
+        const num2 = rpnEquation[i-1];
+        switch (rpnEquation[i]) {
+            case '-':
+                result = subtract(num1, num2);
+                break;
+            case '+':
+                result = add(num1, num2);
+                break;
+            case '*':
+                result = multiply(num1, num2);
+                break;
+            case '/':
+                result = divide(num1, num2);
+                break;
+            default:
+                return "Unrecognized Symbol";
+        }
+
+        // Replace the first equation in the equation with the result
+        rpnEquation.splice(i-inputs, inputs+1); // Remove old equation
+        rpnEquation.splice(i-inputs, 0, result); // Insert result
+    }
+
+    return rpnEquation[0];
 }
 
 function convertToRPN(equation) {
     const tokens = latexTokens(equation);
-    if (typeof tokens == 'string') return tokens;
+    if (typeof tokens === 'string') return tokens;
     let outputQueue = [];
     let operatorStack = [];
 
@@ -284,4 +326,24 @@ function latexTokens(equation) {
     
     if (currentToken) tokens.push(currentToken);
     return tokens;
+}
+
+function subtract(num1, num2) {
+    // Subtraction logic
+    return null;
+}
+
+function add(num1, num2) {
+    // Addition logic
+    return null;
+}
+
+function multiply(num1, num2) {
+    // Multiplication logic
+    return null;
+}
+
+function divide(num1, num2) {
+    // Division logic
+    return null;
 }
