@@ -172,6 +172,7 @@ function calculateResult(equation) {
                 result = divide(num1, num2);
                 break;
             default:
+                console.log(`(T3) Symbol: ${rpnEquation[i]}\tIndex: ${i}`);
                 return "Unrecognized Symbol";
         }
 
@@ -249,6 +250,7 @@ function convertToRPN(equation) {
                 }
                 break;
             default:
+                console.log(`(T2) Symbol: ${token}`);
                 return "Unrecognized Symbol";
         }
         tokens.shift(); // Delete the first element in tokens
@@ -318,6 +320,7 @@ function latexTokens(equation) {
                 }
                 break;
             default:
+                console.log(`(T1) Symbol: ${char}\tIndex: ${index}`);
                 return "Unrecognized Symbol";
         }
         
