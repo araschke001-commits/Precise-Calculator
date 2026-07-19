@@ -174,12 +174,14 @@ function convertToRPN(equation) {
                 while (operatorStack.length > 0 && operatorStack[operatorStack.length - 1] !== '(' && operatorStack[operatorStack.length - 1] !== '[' && operatorStack[operatorStack.length - 1] !== '{' && operatorStack[operatorStack.length - 1] !== '|') {
                     outputQueue.push(operatorStack.pop()); // Pop all up until the left brace to the output queue
                 }
+                operatorStack.pop(); // Remove the left brace
                 tokens.shift(); // Remove the \right so the closing brace gets removed at the end of the loop
                 break;
             case (token === ')' || token === ']' || token === '}' || (token === '|' && isLeftBrace == false)): // Function closing brace
                 while (operatorStack.length > 0 && operatorStack[operatorStack.length - 1] !== '(' && operatorStack[operatorStack.length - 1] !== '[' && operatorStack[operatorStack.length - 1] !== '{' && operatorStack[operatorStack.length - 1] !== '|') {
                     outputQueue.push(operatorStack.pop()); // Pop all up until the left brace to the output queue
                 }
+                operatorStack.pop(); // Remove the left brace
                 if (operatorStack[operatorStack.length - 1] in functionArgs && functionArgNum == 1) {
                     outputQueue.push(operatorStack.pop()); // Pop the function name to the output queue
                 }
