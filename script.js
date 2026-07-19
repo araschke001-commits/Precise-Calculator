@@ -187,7 +187,6 @@ function convertToRPN(equation) {
                 operatorStack.push(token);
                 break;
             case (token === '\\right'):
-                if (tokens[1] === '|') outputQueue.push(tokens[1]); // Add brace to signify absolute value
                 while (operatorStack.length > 0 && operatorStack[operatorStack.length - 1] !== '(' && operatorStack[operatorStack.length - 1] !== '[' && operatorStack[operatorStack.length - 1] !== '{' && operatorStack[operatorStack.length - 1] !== '|') {
                     outputQueue.push(operatorStack.pop()); // Pop all up until the left brace to the output queue
                 }
