@@ -98,7 +98,21 @@ function deleteLastCharacter() {
 function appendToInput(button) {
     if (!mathField) return;
 
-    const sanitizedButton = button === '×' ? '\\times' : button === '÷' ? '\\div' : button === '−' ? '-' : button;
+    let sanitizedButton;
+    switch (button){
+        case '×':
+            sanitizedButton = '\\times';
+            break;
+        case '÷':
+            sanitizedButton = '\\div'
+            break;
+        case '−':
+            sanitizedButton = '-';
+            break;
+        default:
+            sanitizedButton = button;
+            break;
+    }
     mathField.write(sanitizedButton);
     mathField.focus();
 }
@@ -122,12 +136,14 @@ const functionArgs = {
 }
 
 function calculateResult(equation) {
-    rpnEquation = convertToRPN(equation)
+    let rpnEquation = convertToRPN(equation)
+    if (rpnEquation == null) return "Unrecognized Symbol";
     return rpnEquation;
 }
 
 function convertToRPN(equation) {
     const tokens = latexTokens(equation);
+    if (typeof tokens == 'string') return tokens;
     let outputQueue = [];
     let operatorStack = [];
 
@@ -189,6 +205,8 @@ function convertToRPN(equation) {
                     functionArgNum -= 1;
                 }
                 break;
+            default:
+                return "Unrecognized Symbol";
         }
         tokens.shift(); // Delete the first element in tokens
         isLeftBrace = false;
@@ -257,7 +275,7 @@ function latexTokens(equation) {
                 }
                 break;
             default:
-                return null;
+                return "Unrecognized Symbol";
         }
         
         index++;
