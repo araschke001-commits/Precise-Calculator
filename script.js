@@ -187,13 +187,15 @@ function convertToRPN(equation) {
                 operatorStack.push(token);
                 break;
             case (token === '\\right'):
+                if (tokens[1] === '|') outputQueue.push(tokens[1]); // Add brace to signify absolute value
                 while (operatorStack.length > 0 && operatorStack[operatorStack.length - 1] !== '(' && operatorStack[operatorStack.length - 1] !== '[' && operatorStack[operatorStack.length - 1] !== '{' && operatorStack[operatorStack.length - 1] !== '|') {
                     outputQueue.push(operatorStack.pop()); // Pop all up until the left brace to the output queue
                 }
-                operatorStack.pop(); // Remove the left brace
+                const leftBrace = operatorStack.pop(); // Remove the left brace
+                if (leftBrace === '|') outputQueue.push(leftBrace); // Add brace to signify absolute value
                 tokens.shift(); // Remove the \right so the closing brace gets removed at the end of the loop
                 break;
-            case (token === ')' || token === ']' || token === '}' || (token === '|' && isLeftBrace == false)): // Function closing brace
+            case (token === ')' || token === ']' || token === '}'): // Function closing brace
                 while (operatorStack.length > 0 && operatorStack[operatorStack.length - 1] !== '(' && operatorStack[operatorStack.length - 1] !== '[' && operatorStack[operatorStack.length - 1] !== '{' && operatorStack[operatorStack.length - 1] !== '|') {
                     outputQueue.push(operatorStack.pop()); // Pop all up until the left brace to the output queue
                 }
@@ -253,7 +255,7 @@ function latexTokens(equation) {
                 tokens.push(currentToken);
                 currentToken = '';
                 continue;
-            case /[+\-*/^(){}\[\]]/.test(char): // Operators and braces
+            case /[+\-*/^(){}\[\]|]/.test(char): // Operators and braces
                 if (currentToken) {
                     tokens.push(currentToken);
                     currentToken = '';
