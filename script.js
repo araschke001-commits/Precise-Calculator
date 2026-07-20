@@ -174,6 +174,15 @@ function calculateResult(equation) {
             case '/':
                 result = divide(num1, num2);
                 break;
+            case '^':
+                result = 0; // Change this later when we actually have the power function
+                break;
+            case '|':
+                result = 0; // Change this later when we actually have the abs function
+                break;
+            case '\\frac':
+                result = divide(num1, num2); // Add handling later for keeping as a fraction maybe
+                break;
             default:
                 console.log(`(T3) Symbol: ${rpnEquation[i]}\tIndex: ${i}`);
                 return "Unrecognized Symbol";
