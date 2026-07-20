@@ -145,11 +145,14 @@ function calculateResult(equation) {
         let inputs = 0;
         while (i < rpnEquation.length) {
             if (rpnEquation[i] in functionArgs) {
+                console.log(`${rpnEquation[i]} detected`)
                 inputs = functionArgs[rpnEquation[i]];
                 break;
             }
             if (/[+\-*/^|]/.test(rpnEquation[i])) {
+                console.log(`${rpnEquation[i]} detected`);
                 (rpnEquation[i] === '|') ? inputs = 1 : inputs = 2;
+                break;
             }
             i++;
         }
