@@ -363,6 +363,7 @@ function divide(num1, num2) {
 
 // Removes any extra zeros at the beginning and end (if decimal) (Ex: 099.90 -> 99.9) and any extra signs (Ex: -+-2 -> 2)
 function cleanNum(num) {
+    console.log(`Cleaning ${num}...`)
     let i = 0;
     let isNegative = false;
     let charCount = 0
@@ -377,6 +378,7 @@ function cleanNum(num) {
     }
     cleanNum = cleanNum.slice(charCount);
     if (isNegative) cleanNum = "-" + cleanNum;
+    console.log(`Cleaning - Stage 1 complete (${cleanNum})`)
 
     // Remove zeros from beginning
     charCount = 0;
@@ -384,6 +386,7 @@ function cleanNum(num) {
         charCount++;
     }
     cleanNum = cleanNum.slice(charCount);
+    console.log(`Cleaning - Stage 2 complete (${cleanNum})`)
 
     // If decimal, remove zeros from end
     if (cleanNum.includes(".")) {
@@ -393,7 +396,9 @@ function cleanNum(num) {
             charCount++;
         }
         cleanNum = cleanNum.slice(0, -charCount);
+        console.log(`Cleaning - Stage 3 complete (${cleanNum})`)
     }
+    
 
     console.log(`Cleaned: ${cleanNum}`);
     return (cleanNum === "") ? "0" : cleanNum;
