@@ -145,12 +145,10 @@ function calculateResult(equation) {
         let inputs = 0;
         while (i < rpnEquation.length) {
             if (rpnEquation[i] in functionArgs) {
-                console.log(`${rpnEquation[i]} detected`)
                 inputs = functionArgs[rpnEquation[i]];
                 break;
             }
             if (/[+\-*/^|]/.test(rpnEquation[i])) {
-                console.log(`${rpnEquation[i]} detected`);
                 (rpnEquation[i] === '|') ? inputs = 1 : inputs = 2;
                 break;
             }
@@ -217,7 +215,7 @@ function convertToRPN(equation) {
         let token = tokens[0];
         switch (true) {
             case (/[0-9.]+/.test(token)): // Number
-                outputQueue.push(token);
+                outputQueue.push(cleanNum(token));
                 break;
             case (/[+\-*/^]/.test(token)): // Operator
                 if (operatorStack.length > 0 && operatorStack[operatorStack.length - 1] in precedence && token in precedence && precedence[operatorStack[operatorStack.length - 1]] > precedence[token]) {
@@ -344,8 +342,8 @@ function latexTokens(equation) {
 }
 
 function subtract(num1, num2) {
-    // Subtraction logic
-    return null;
+    return null; // Placeholder until the function is at testing state
+
 }
 
 function add(num1, num2) {
@@ -361,4 +359,42 @@ function multiply(num1, num2) {
 function divide(num1, num2) {
     // Division logic
     return null;
+}
+
+// Removes any extra zeros at the beginning and end (if decimal) (Ex: 099.90 -> 99.9) and any extra signs (Ex: -+-2 -> 2)
+function cleanNum(num) {
+    let i = 0;
+    let isNegative = false;
+    let charCount = 0
+    let cleanNum = num;
+    
+    // Remove extra signs
+    while (i < cleanNum.length && !/[0-9.]/.test(cleanNum[i])) {
+        charCount++;
+        if (cleanNum[i] === '-') {
+            isNegative = !isNegative;
+        }
+    }
+    cleanNum = cleanNum.slice(charCount);
+    if (isNegative) cleanNum = "-" + cleanNum;
+
+    // Remove zeros from beginning
+    charCount = 0;
+    while (i < cleanNum.length && !/[1-9.]/.test(cleanNum[i])) {
+        charCount++;
+    }
+    cleanNum = cleanNum.slice(charCount);
+
+    // If decimal, remove zeros from end
+    if (cleanNum.includes(".")) {
+        i = cleanNum.length-1;
+        charCount = 0;
+        while (i >= 0 && !/[1-9.]/.test(cleanNum[i])) {
+            charCount++;
+        }
+        cleanNum = cleanNum.slice(0, -charCount);
+    }
+
+    console.log(`Cleaned: ${cleanNum}`);
+    return (cleanNum === "") ? "0" : cleanNum;
 }
