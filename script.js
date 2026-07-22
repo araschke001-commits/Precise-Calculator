@@ -375,6 +375,7 @@ function cleanNum(num) {
         if (cleanNum[i] === '-') {
             isNegative = !isNegative;
         }
+        i++;
     }
     cleanNum = cleanNum.slice(charCount);
     if (isNegative) cleanNum = "-" + cleanNum;
@@ -384,6 +385,7 @@ function cleanNum(num) {
     charCount = 0;
     while (i < cleanNum.length && !/[1-9.]/.test(cleanNum[i])) {
         charCount++;
+        i++;
     }
     cleanNum = cleanNum.slice(charCount);
     console.log(`Cleaning - Stage 2 complete (${cleanNum})`)
@@ -394,6 +396,7 @@ function cleanNum(num) {
         charCount = 0;
         while (i >= 0 && !/[1-9.]/.test(cleanNum[i])) {
             charCount++;
+            i--;
         }
         cleanNum = cleanNum.slice(0, -charCount);
         console.log(`Cleaning - Stage 3 complete (${cleanNum})`)
