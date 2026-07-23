@@ -388,11 +388,16 @@ function cleanNum(num) {
     // Remove zeros from beginning
     i = 0;
     charCount = 0;
-    while (i < cleanedNum.length && !/[-1-9.]/.test(cleanedNum[i])) {
-        charCount++;
+    let skipCount = 0;
+    while (i < cleanedNum.length && !/[1-9.]/.test(cleanedNum[i])) {
+        if (cleanedNum[i] === '0') {
+            charCount++;
+        } else { // Negatives
+            skipCount++;
+        }
         i++;
     }
-    cleanedNum = cleanedNum.slice(charCount);
+    cleanedNum = cleanedNum.slice(0, skipCount) + cleanedNum.slice(skipCount + charCount);
     if (cleanedNum[0] === '.') cleanedNum = '0' + cleanedNum;
     console.log(`Cleaning - Stage 2 complete (${cleanedNum})`)
 
