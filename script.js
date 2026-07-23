@@ -276,6 +276,7 @@ function latexTokens(equation) {
     let tokens = [];
     let currentToken = '';
     let index = 0;
+    let lastIsNum = false;
 
     while (index < equation.length) {
         let char = equation[index];
@@ -285,8 +286,8 @@ function latexTokens(equation) {
                     tokens.push(currentToken);
                     currentToken = '';
                 }
-                currentToken += char;  // Add the backslash
                 index++;
+                // Adds the command name without the backslash
                 while (index < equation.length && /[a-zA-Z]/.test(equation[index])) {
                     currentToken += equation[index];
                     index++;
@@ -313,16 +314,19 @@ function latexTokens(equation) {
                     tokens.push(currentToken);
                     currentToken = '';
                 }
-                tokens.push(char);
-                break;
-            case /[0-9.]/.test(char): // Numbers (including decimal points)
-                while (index < equation.length && /[0-9.]/.test(equation[index])) {
+                if (lastIsNum) {
+                    tokens.push(char);
+                    break;
+                }
+            case /[-0-9.+]/.test(char): // Numbers (including decimal points and signs)
+                while (index < equation.length && /[-0-9.+]/.test(equation[index])) {
                     currentToken += equation[index];
                     index++;
                 }
+                lastIsNum = true;
                 tokens.push(currentToken);
                 currentToken = '';
-                continue;
+                continue; // Skips the index++ at the end of the switch block because we already incremented it above
             case /\s/.test(char): // Whitespace
                 if (currentToken) {
                     tokens.push(currentToken);
@@ -388,13 +392,14 @@ function cleanNum(num) {
         i++;
     }
     cleanNum = cleanNum.slice(charCount);
+    if (cleanNum[0] === '.') cleanNum = '0' + cleanNum;
     console.log(`Cleaning - Stage 2 complete (${cleanNum})`)
 
     // If decimal, remove zeros from end
     if (cleanNum.includes(".")) {
         i = cleanNum.length-1;
         charCount = 0;
-        while (i >= 0 && !/[1-9.]/.test(cleanNum[i])) {
+        while (i >= 0 && !/[1-9]/.test(cleanNum[i])) {
             charCount++;
             i--;
         }
