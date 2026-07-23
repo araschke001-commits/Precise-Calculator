@@ -118,21 +118,21 @@ function appendToInput(button) {
 }
 
 const functionArgs = {
-    '\\sqrt': 1,
-    '\\root': 2, // What sqrt gets changed to by RPN converter
-    '\\frac': 2,
-    '\\log': 1,
-    '\\ln': 1,
-    '\\exp': 1,
-    '\\sin': 1,
-    '\\cos': 1,
-    '\\tan': 1,
-    '\\arcsin': 1,
-    '\\arccos': 1,
-    '\\arctan': 1,
-    '\\csc': 1,
-    '\\sec': 1,
-    '\\cot': 1
+    'sqrt': 1,
+    'root': 2, // What sqrt gets changed to by RPN converter
+    'frac': 2,
+    'log': 1,
+    'ln': 1,
+    'exp': 1,
+    'sin': 1,
+    'cos': 1,
+    'tan': 1,
+    'arcsin': 1,
+    'arccos': 1,
+    'arctan': 1,
+    'csc': 1,
+    'sec': 1,
+    'cot': 1
 }
 
 function calculateResult(equation) {
@@ -178,7 +178,7 @@ function calculateResult(equation) {
             case '|':
                 result = 0; // Change this later when we actually have the abs function
                 break;
-            case '\\frac':
+            case 'frac':
                 result = divide(num1, num2); // Add handling later for keeping as a fraction maybe
                 break;
             default:
@@ -224,13 +224,13 @@ function convertToRPN(equation) {
                 operatorStack.push(token);
                 break;
             case (token in functionArgs): // Function
-                if (token === '\\sqrt' && tokens[1] === '['){
-                    token = '\\root';
+                if (token === 'sqrt' && tokens[1] === '['){
+                    token = 'root';
                 }
                 operatorStack.push(token);
                 functionArgNum = functionArgs[token];
                 break;
-            case (token === '\\left'):
+            case (token === 'left'):
                 // Ensure | is detected correctly as left or right
                 isLeftBrace = true;
                 tokens.shift();
@@ -239,7 +239,7 @@ function convertToRPN(equation) {
                 // If left brace, push to stack
                 operatorStack.push(token);
                 break;
-            case (token === '\\right'):
+            case (token === 'right'):
                 while (operatorStack.length > 0 && operatorStack[operatorStack.length - 1] !== '(' && operatorStack[operatorStack.length - 1] !== '[' && operatorStack[operatorStack.length - 1] !== '{' && operatorStack[operatorStack.length - 1] !== '|') {
                     outputQueue.push(operatorStack.pop()); // Pop all up until the left brace to the output queue
                 }
@@ -295,13 +295,13 @@ function latexTokens(equation) {
 
                 //Handle operators like \times and \div
                 switch (currentToken) {
-                    case '\\times':
+                    case 'times':
                         currentToken = '*';
                         break;
-                    case '\\cdot':
+                    case 'cdot':
                         currentToken = '*';
                         break;
-                    case '\\div':
+                    case 'div':
                         currentToken = '/';
                         break;
                 }
