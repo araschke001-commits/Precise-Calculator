@@ -388,7 +388,7 @@ function cleanNum(num) {
     // Remove zeros from beginning
     i = 0;
     charCount = 0;
-    while (i < cleanedNum.length && !/[1-9.]/.test(cleanedNum[i])) {
+    while (i < cleanedNum.length && !/[-1-9.]/.test(cleanedNum[i])) {
         charCount++;
         i++;
     }
@@ -407,7 +407,6 @@ function cleanNum(num) {
         cleanedNum = cleanedNum.slice(0, -charCount);
         console.log(`Cleaning - Stage 3 complete (${cleanedNum})`)
     }
-    
 
     console.log(`Cleaned: ${cleanedNum}`);
     return (cleanedNum === "") ? "0" : cleanedNum;
