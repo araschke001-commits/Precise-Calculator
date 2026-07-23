@@ -157,20 +157,19 @@ function calculateResult(equation) {
 
         // Calculate the first equation
         let result = '';
-        const num1 = rpnEquation[i-2];
-        const num2 = rpnEquation[i-1];
+        const args = rpnEquation.slice(i - inputs, i);
         switch (rpnEquation[i]) {
             case '-':
-                result = subtract(num1, num2);
+                result = subtract(args[0], args[1]);
                 break;
             case '+':
-                result = add(num1, num2);
+                result = add(args[0], args[1]);
                 break;
             case '*':
-                result = multiply(num1, num2);
+                result = multiply(args[0], args[1]);
                 break;
             case '/':
-                result = divide(num1, num2);
+                result = divide(args[0], args[1]);
                 break;
             case '^':
                 result = 0; // Change this later when we actually have the power function
@@ -178,8 +177,14 @@ function calculateResult(equation) {
             case '|':
                 result = 0; // Change this later when we actually have the abs function
                 break;
+            case 'sqrt':
+                result = 0; // Change this later when we actually have the sqrt function
+                break;
+            case 'root':
+                result = 0; // Change this later when we actually have nth roots
+                break;
             case 'frac':
-                result = divide(num1, num2); // Add handling later for keeping as a fraction maybe
+                result = divide(args[0], args[1]); // Add handling later for keeping as a fraction maybe
                 break;
             default:
                 console.log(`(T3) Symbol: ${rpnEquation[i]}\tIndex: ${i}`);
