@@ -308,8 +308,15 @@ function latexTokens(equation) {
 
                 tokens.push(currentToken);
                 currentToken = '';
-                continue;
-            case /[+\-*/^(){}\[\]|]/.test(char): // Operators and braces
+                continue; // Skips the index++ at the end of the switch block because we already incremented it above
+            case /[(){}\[\]|]/.test(char): // Braces
+                if (currentToken) {
+                    tokens.push(currentToken);
+                    currentToken = '';
+                }
+                tokens.push(char);
+                break;
+            case /[+\-*/^]/.test(char): // Operators
                 if (currentToken) {
                     tokens.push(currentToken);
                     currentToken = '';
