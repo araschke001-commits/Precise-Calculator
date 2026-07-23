@@ -371,43 +371,44 @@ function cleanNum(num) {
     let i = 0;
     let isNegative = false;
     let charCount = 0
-    let cleanNum = num;
+    let cleanedNum = num;
     
     // Remove extra signs
-    while (i < cleanNum.length && !/[0-9.]/.test(cleanNum[i])) {
+    while (i < cleanedNum.length && !/[0-9.]/.test(cleanedNum[i])) {
         charCount++;
-        if (cleanNum[i] === '-') {
+        if (cleanedNum[i] === '-') {
             isNegative = !isNegative;
         }
         i++;
     }
-    cleanNum = cleanNum.slice(charCount);
-    if (isNegative) cleanNum = "-" + cleanNum;
-    console.log(`Cleaning - Stage 1 complete (${cleanNum})`)
+    cleanedNum = cleanedNum.slice(charCount);
+    if (isNegative) cleanedNum = "-" + cleanedNum;
+    console.log(`Cleaning - Stage 1 complete (${cleanedNum})`)
 
     // Remove zeros from beginning
+    i = 0;
     charCount = 0;
-    while (i < cleanNum.length && !/[1-9.]/.test(cleanNum[i])) {
+    while (i < cleanedNum.length && !/[1-9.]/.test(cleanedNum[i])) {
         charCount++;
         i++;
     }
-    cleanNum = cleanNum.slice(charCount);
-    if (cleanNum[0] === '.') cleanNum = '0' + cleanNum;
-    console.log(`Cleaning - Stage 2 complete (${cleanNum})`)
+    cleanedNum = cleanedNum.slice(charCount);
+    if (cleanedNum[0] === '.') cleanedNum = '0' + cleanedNum;
+    console.log(`Cleaning - Stage 2 complete (${cleanedNum})`)
 
     // If decimal, remove zeros from end
-    if (cleanNum.includes(".")) {
-        i = cleanNum.length-1;
+    if (cleanedNum.includes(".")) {
+        i = cleanedNum.length-1;
         charCount = 0;
-        while (i >= 0 && !/[1-9]/.test(cleanNum[i])) {
+        while (i >= 0 && !/[1-9]/.test(cleanedNum[i])) {
             charCount++;
             i--;
         }
-        cleanNum = cleanNum.slice(0, -charCount);
-        console.log(`Cleaning - Stage 3 complete (${cleanNum})`)
+        cleanedNum = cleanedNum.slice(0, -charCount);
+        console.log(`Cleaning - Stage 3 complete (${cleanedNum})`)
     }
     
 
-    console.log(`Cleaned: ${cleanNum}`);
-    return (cleanNum === "") ? "0" : cleanNum;
+    console.log(`Cleaned: ${cleanedNum}`);
+    return (cleanedNum === "") ? "0" : cleanedNum;
 }
