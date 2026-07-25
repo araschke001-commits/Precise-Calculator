@@ -357,24 +357,82 @@ function latexTokens(equation) {
     return tokens;
 }
 
+//For calculations, numbers must be cleaned (using cleanNum) and numbers must be strings
+
 function subtract(num1, num2) {
     return null; // Placeholder until the function is at testing state
+    let isNegative = false;
+
+    // Handle negative numbers
+    if (num1[0] === '-' && num2[0] === '-') { // Both negative
+        return subtract(num2.slice(1), num1.slice(1)); // Swap numbers and remove - (answer still positive)
+    } else if (num1[0] === '-' && num2[0] !== '-') { // Only num1 negative
+        return '-' + add(num1.slice(1), num2); // Add abs of nums and - it
+    } else if (num1[0] !== '-' && num2[0] === '-') { // Only num2 negative
+        return add(num1, num2.slice(1)); // Add abs of num2
+    }
+    
+    // Determine which number is greater
+    if (num2.length > num1.length) {
+        // Swap the numbers (answer will be negative)
+        let temp = num1;
+        num1 = num2;
+        num2 = temp;
+        isNegative = true;
+    } else if (num2.length === num1.length) {
+        // Check digit by digit for which is greater
+        for (let i = 0; i < num1.length, i++;) {
+            if (Number(num1[i]) > Number(num2[i])) {
+                break;
+            } else if (Number(num2[i]) > Number(num1[i])) {
+                // Swap the numbers (answer will be negative)
+                let temp = num1;
+                num1 = num2;
+                num2 = temp;
+                isNegative = true;
+                break;
+            }
+        }
+    }
+
+    //Conditions at this point: num2.length < num1.length, nums are clean, nums are positive
+
+    // Align decimal points if either number is a decimal
+    let num1DecimalPos = num1.indexOf('.');
+    let num2DecimalPos = num2.indexOf('.');
+    if (!(num1DecimalPos === -1 && num2DecimalPos === -1)) { // If there are any decimals
+        if (num1DecimalPos > num2DecimalPos) {
+            for (let i = 0; i < num1DecimalPos - num2DecimalPos; i++) {
+                num2 = num2 + '0';
+            }
+        } else if (num2DecimalPos > num1DecimalPos) {
+            for (let i = 0; i < num2DecimalPos - num1DecimalPos; i++) {
+                num1 = num1 + '0';
+            }
+        }
+    }
+
+    // Add extra zeros if needed at the start of num2
+    for (let i = 0; i < num2.length - num1.length; i++) {
+        num2 = "0" + num2;
+    }
+    
+    console.log(`Subtraction set up. Nums: ${num1}, ${num2}`);
+
+    // Perform subtraction
 
 }
 
 function add(num1, num2) {
-    // Addition logic
-    return null;
+    return null; // Placeholder until the function is at testing state
 }
 
 function multiply(num1, num2) {
-    // Multiplication logic
-    return null;
+    return null; // Placeholder until the function is at testing state
 }
 
 function divide(num1, num2) {
-    // Division logic
-    return null;
+    return null; // Placeholder until the function is at testing state
 }
 
 // Removes any extra zeros at the beginning and end (if decimal) (Ex: 099.90 -> 99.9) and any extra signs (Ex: -+-2 -> 2)
