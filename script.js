@@ -313,6 +313,7 @@ function latexTokens(equation) {
 
                 tokens.push(currentToken);
                 currentToken = '';
+                lastIsNum = false;
                 continue; // Skips the index++ at the end of the switch block because we already incremented it above
             case /[(){}\[\]|]/.test(char): // Braces
                 if (currentToken) {
@@ -320,6 +321,7 @@ function latexTokens(equation) {
                     currentToken = '';
                 }
                 tokens.push(char);
+                lastIsNum = false;
                 break;
             case /[+\-*/^]/.test(char): // Operators
                 if (currentToken) {
@@ -328,10 +330,16 @@ function latexTokens(equation) {
                 }
                 if (lastIsNum) {
                     tokens.push(char);
+                    lastIsNum = false;
                     break;
                 }
+                lastIsNum = false;
             case /[-0-9.+]/.test(char): // Numbers (including decimal points and signs)
-                while (index < equation.length && /[-0-9.+]/.test(equation[index])) {
+                let digitDetected = false;
+
+                // Tests for numbers, only including signs if a number has not been detected yet
+                while (index < equation.length && ((/[-0-9.+]/.test(equation[index]) && !digitDetected) || (digitDetected && /[0-9.]/.test(equation[index])))) {
+                    digitDetected = /[0-9.]/.test(equation[index]);
                     currentToken += equation[index];
                     index++;
                 }
@@ -356,6 +364,9 @@ function latexTokens(equation) {
     if (currentToken) tokens.push(currentToken);
     return tokens;
 }
+
+// Modulus function that works with negative numbers (Ex: mod(-1, 5) = 4)
+const mod = (n, m) => ((n % m) + m) % m;
 
 //For calculations, numbers must be cleaned (using cleanNum) and numbers must be strings
 
@@ -382,9 +393,29 @@ function subtract(num1, num2) {
     } else if (num2.length === num1.length) {
         // Check digit by digit for which is greater
         for (let i = 0; i < num1.length, i++;) {
-            if (Number(num1[i]) > Number(num2[i])) {
+            let num1digit = Number(num1[i]);
+            let num2digit = Number(num2[i]);
+
+            // Handle decimal points
+            if (isNaN(num1digit) && isNaN(num2digit)) {
+                continue;
+            } else if (isNaN(num1digit)) {
+                // If num1digit is NaN, it must be a decimal point, so num2 is greater
+
+                // Swap the numbers (answer will be negative)
+                let temp = num1;
+                num1 = num2;
+                num2 = temp;
+                isNegative = true;
                 break;
-            } else if (Number(num2[i]) > Number(num1[i])) {
+            } else if (isNaN(num2digit)) {
+                // If num2digit is NaN, it must be a decimal point, so num1 is greater
+                break;
+            }
+            
+            if (num1digit > num2digit) {
+                break;
+            } else if (num2digit > num1digit) {
                 // Swap the numbers (answer will be negative)
                 let temp = num1;
                 num1 = num2;
@@ -397,19 +428,24 @@ function subtract(num1, num2) {
 
     //Conditions at this point: num2.length < num1.length, nums are clean, nums are positive
 
-    // Align decimal points if either number is a decimal
-    let num1DecimalPos = num1.indexOf('.');
-    let num2DecimalPos = num2.indexOf('.');
-    if (!(num1DecimalPos === -1 && num2DecimalPos === -1)) { // If there are any decimals
-        if (num1DecimalPos > num2DecimalPos) {
-            for (let i = 0; i < num1DecimalPos - num2DecimalPos; i++) {
+    // Align decimal points if either number is a decimal & delete the decimal points
+    let num1DecimalDis = (num1.length - 1) - num1.indexOf('.');
+    let num2DecimalDis = (num2.length - 1) - num2.indexOf('.');
+    let decimalPos = Math.min(mod(num1.indexOf('.'), num1.length + 1), mod(num2.indexOf('.'), num2.length + 1)); // If there is no decimal, the index will be -1, so we use mod to make it the length of the number
+    if (!(num1DecimalDis >= num1.length && num2DecimalDis >= num2.length)) { // If there are any decimals
+        if (num1DecimalDis > num2DecimalDis) {
+            for (let i = 0; i < num1DecimalDis - num2DecimalDis; i++) {
                 num2 = num2 + '0';
             }
-        } else if (num2DecimalPos > num1DecimalPos) {
-            for (let i = 0; i < num2DecimalPos - num1DecimalPos; i++) {
+        } else if (num2DecimalDis > num1DecimalDis) {
+            for (let i = 0; i < num2DecimalDis - num1DecimalDis; i++) {
                 num1 = num1 + '0';
             }
         }
+
+        // Delete the decimal points
+        num1 = num1.replace('.', '');
+        num2 = num2.replace('.', '');
     }
 
     // Add extra zeros if needed at the start of num2
@@ -443,7 +479,7 @@ function cleanNum(num) {
     let charCount = 0
     let cleanedNum = num;
     
-    // Remove extra signs
+    // Remove extra signs and extra decimal points
     while (i < cleanedNum.length && !/[0-9.]/.test(cleanedNum[i])) {
         charCount++;
         if (cleanedNum[i] === '-') {
@@ -453,6 +489,15 @@ function cleanNum(num) {
     }
     cleanedNum = cleanedNum.slice(charCount);
     if (isNegative) cleanedNum = "-" + cleanedNum;
+    // Remove extra decimal points
+    if (cleanedNum.indexOf('.') !== cleanedNum.lastIndexOf('.')) {
+        let decimalNum = cleanedNum.split('.').length - 1;
+        if (cleanedNum.lastIndexOf('.') - cleanedNum.indexOf('.') + 1 !== decimalNum) {
+            return "Syntax Error (Invalid number format)";
+        }
+        let decimalIndex = cleanedNum.indexOf('.');
+        cleanedNum = cleanedNum.slice(0, decimalIndex) + cleanedNum.slice(decimalIndex + decimalNum);
+    }
     console.log(`Cleaning - Stage 1 complete (${cleanedNum})`)
 
     // Remove zeros from beginning
@@ -479,7 +524,9 @@ function cleanNum(num) {
             charCount++;
             i--;
         }
-        cleanedNum = cleanedNum.slice(0, -charCount);
+        if (charCount > 0) { // If there aren't any to remove, it would retrieve 0 to 0, so deletes the number
+            cleanedNum = cleanedNum.slice(0, -charCount);
+        }
         console.log(`Cleaning - Stage 3 complete (${cleanedNum})`)
     }
 
