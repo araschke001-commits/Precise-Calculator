@@ -334,11 +334,11 @@ function latexTokens(equation) {
                     break;
                 }
                 lastIsNum = false;
-            case /[-0-9.+]/.test(char): // Numbers (including decimal points and signs)
+            case /[-0-9.,+]/.test(char): // Numbers (including decimal points, commas, and signs)
                 let digitDetected = false;
 
                 // Tests for numbers, only including signs if a number has not been detected yet
-                while (index < equation.length && ((/[-0-9.+]/.test(equation[index]) && !digitDetected) || (digitDetected && /[0-9.]/.test(equation[index])))) {
+                while (index < equation.length && ((/[-0-9.,+]/.test(equation[index]) && !digitDetected) || (digitDetected && /[0-9.,]/.test(equation[index])))) {
                     digitDetected = /[0-9.]/.test(equation[index]);
                     currentToken += equation[index];
                     index++;
@@ -479,7 +479,7 @@ function cleanNum(num) {
     let charCount = 0
     let cleanedNum = num;
     
-    // Remove extra signs and extra decimal points
+    // Remove extra signs
     while (i < cleanedNum.length && !/[0-9.]/.test(cleanedNum[i])) {
         charCount++;
         if (cleanedNum[i] === '-') {
@@ -489,16 +489,22 @@ function cleanNum(num) {
     }
     cleanedNum = cleanedNum.slice(charCount);
     if (isNegative) cleanedNum = "-" + cleanedNum;
-    // Remove extra decimal points
+    console.log(`Cleaning - Stage 1 complete (-/+) (${cleanedNum})`)
+
+    // Remove extra decimal points and all commas
     if (cleanedNum.indexOf('.') !== cleanedNum.lastIndexOf('.')) {
         let decimalNum = cleanedNum.split('.').length - 1;
+        console.log(`${decimalNum} decimals in ${cleanedNum}`);
         if (cleanedNum.lastIndexOf('.') - cleanedNum.indexOf('.') + 1 !== decimalNum) {
+            console.log(`Diff: ${cleanedNum.lastIndexOf('.') - cleanedNum.indexOf('.') + 1}`);
             return "Syntax Error (Invalid number format)";
         }
         let decimalIndex = cleanedNum.indexOf('.');
-        cleanedNum = cleanedNum.slice(0, decimalIndex) + cleanedNum.slice(decimalIndex + decimalNum);
+        console.log(`Decimal index: ${decimalIndex}`);
+        cleanedNum = cleanedNum.slice(0, decimalIndex + 1) + cleanedNum.slice(decimalIndex + decimalNum);
     }
-    console.log(`Cleaning - Stage 1 complete (${cleanedNum})`)
+    cleanedNum = cleanedNum.replace(/,/g, ''); // Remove all commas
+    console.log(`Cleaning - Stage 2 complete (./,) (${cleanedNum})`)
 
     // Remove zeros from beginning
     i = 0;
@@ -513,8 +519,18 @@ function cleanNum(num) {
         i++;
     }
     cleanedNum = cleanedNum.slice(0, skipCount) + cleanedNum.slice(skipCount + charCount);
-    if (cleanedNum[0] === '.') cleanedNum = '0' + cleanedNum;
-    console.log(`Cleaning - Stage 2 complete (${cleanedNum})`)
+    // Add missing leading zero (if needed)
+    let firstIndex = 0;
+    for (let i = 0; i < cleanedNum.length; i++) {
+        if (/[0-9.]/.test(cleanedNum[i])) {
+            firstIndex = i;
+            break;
+        }
+    }
+    if (cleanedNum[firstIndex] === '.') {
+        cleanedNum = cleanedNum.slice(0, firstIndex) + '0' + cleanedNum.slice(firstIndex);
+    }
+    console.log(`Cleaning - Stage 3 complete (0s beg) (${cleanedNum})`)
 
     // If decimal, remove zeros from end
     if (cleanedNum.includes(".")) {
@@ -527,7 +543,7 @@ function cleanNum(num) {
         if (charCount > 0) { // If there aren't any to remove, it would retrieve 0 to 0, so deletes the number
             cleanedNum = cleanedNum.slice(0, -charCount);
         }
-        console.log(`Cleaning - Stage 3 complete (${cleanedNum})`)
+        console.log(`Cleaning - Stage 4 complete (0s end) (${cleanedNum})`)
     }
 
     console.log(`Cleaned: ${cleanedNum}`);
