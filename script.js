@@ -66,7 +66,6 @@ function handleButtonClick(button) {
     } else if (button === '=') {
         const equation = mathField ? mathField.latex() : '';
         const result = calculateResult(equation);
-        console.log(`${equation} = ` + result);
         const resultBox = document.getElementById('result');
         if (resultBox) {
             resultBox.textContent = result;
@@ -136,6 +135,7 @@ const functionArgs = {
 }
 
 function calculateResult(equation) {
+    console.groupCollapsed(`Calculating ${equation}`);
     let rpnEquation = convertToRPN(equation)
     if (typeof rpnEquation === 'string') return rpnEquation;
     
@@ -188,6 +188,7 @@ function calculateResult(equation) {
                 break;
             default:
                 console.log(`(T3) Symbol: ${rpnEquation[i]}\tIndex: ${i}`);
+                console.groupEnd();
                 return "Unrecognized Symbol";
         }
 
@@ -196,6 +197,8 @@ function calculateResult(equation) {
         rpnEquation.splice(i-inputs, 0, result); // Insert result
     }
 
+    console.log(`Result: ${rpnEquation[0]}`);
+    console.groupEnd();
     return rpnEquation[0];
 }
 
@@ -274,6 +277,7 @@ function convertToRPN(equation) {
     while (operatorStack.length > 0){
         outputQueue.push(operatorStack.pop());
     }
+    console.log(`RPN: ${outputQueue}`);
     return outputQueue;
 }
 
@@ -362,6 +366,7 @@ function latexTokens(equation) {
     }
     
     if (currentToken) tokens.push(currentToken);
+    console.log(`Tokens: ${tokens}`);
     return tokens;
 }
 
@@ -372,20 +377,34 @@ const mod = (n, m) => ((n % m) + m) % m;
 
 function subtract(num1, num2) {
     return null; // Placeholder until the function is at testing state
+    console.groupCollapsed(`Subtracting ${num1} - ${num2}`);
     let isNegative = false;
+    let result = "";
 
     // Handle negative numbers
     if (num1[0] === '-' && num2[0] === '-') { // Both negative
-        return subtract(num2.slice(1), num1.slice(1)); // Swap numbers and remove - (answer still positive)
+        console.log(`Both negative, swapping numbers and removing -`);
+        result = subtract(num2.slice(1), num1.slice(1)); // Swap numbers and remove - (answer still positive)
+        console.groupEnd(); // End outer subtraction group (inner one ended before returning)
+        return result;
     } else if (num1[0] === '-' && num2[0] !== '-') { // Only num1 negative
-        return '-' + add(num1.slice(1), num2); // Add abs of nums and - it
+        console.log(`Num1 negative, adding abs of nums (negative result)`);
+        result = '-' + add(num1.slice(1), num2); // Add abs of nums and - it
+        console.groupEnd(); // End outer subtraction group (inner one ended before returning)
+        return result;
     } else if (num1[0] !== '-' && num2[0] === '-') { // Only num2 negative
-        return add(num1, num2.slice(1)); // Add abs of num2
+        console.log(`Num2 negative, adding abs of nums`);
+        result = add(num1, num2.slice(1)); // Add abs of num2
+        console.groupEnd(); // End outer subtraction group (inner one ended before returning)
+        return result;
     }
-    
+
+    console.groupCollapsed(`Setting up subtraction`);
+
     // Determine which number is greater
     if (num2.length > num1.length) {
         // Swap the numbers (answer will be negative)
+        console.log(`${num2} > ${num1}, swapping numbers (answer negative)`);
         let temp = num1;
         num1 = num2;
         num2 = temp;
@@ -403,6 +422,7 @@ function subtract(num1, num2) {
                 // If num1digit is NaN, it must be a decimal point, so num2 is greater
 
                 // Swap the numbers (answer will be negative)
+                console.log(`${num2} > ${num1}, swapping numbers (answer negative)`);
                 let temp = num1;
                 num1 = num2;
                 num2 = temp;
@@ -417,6 +437,7 @@ function subtract(num1, num2) {
                 break;
             } else if (num2digit > num1digit) {
                 // Swap the numbers (answer will be negative)
+                console.log(`${num2} > ${num1}, swapping numbers (answer negative)`);
                 let temp = num1;
                 num1 = num2;
                 num2 = temp;
@@ -455,8 +476,15 @@ function subtract(num1, num2) {
     
     console.log(`Subtraction set up. Nums: ${num1}, ${num2}`);
 
-    // Perform subtraction
+    console.groupEnd(); // Setup end call
 
+    // Perform subtraction
+    console.groupCollapsed(`Performing subtraction`);
+    //...
+    console.groupEnd(); // Subtraction end call
+
+    console.groupEnd(); // Main end call
+    return ;
 }
 
 function add(num1, num2) {
@@ -473,7 +501,7 @@ function divide(num1, num2) {
 
 // Removes any extra zeros at the beginning and end (if decimal) (Ex: 099.90 -> 99.9) and any extra signs (Ex: -+-2 -> 2)
 function cleanNum(num) {
-    console.log(`Cleaning ${num}...`)
+    console.groupCollapsed(`Cleaning ${num}`);
     let i = 0;
     let isNegative = false;
     let charCount = 0
@@ -547,5 +575,6 @@ function cleanNum(num) {
     }
 
     console.log(`Cleaned: ${cleanedNum}`);
+    console.groupEnd();
     return (cleanedNum === "") ? "0" : cleanedNum;
 }
